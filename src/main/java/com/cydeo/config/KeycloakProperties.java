@@ -16,8 +16,6 @@ public class KeycloakProperties {
     private String authServerUrl;
     @Value("${keycloak.resource}")
     private String clientId;
-    @Value("${keycloak.realm}")
-    private String realm;
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
     @Value("${master.user}")
