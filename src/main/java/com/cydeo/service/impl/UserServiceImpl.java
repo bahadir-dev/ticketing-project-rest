@@ -8,6 +8,7 @@ import com.cydeo.entity.Task;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.UserRepository;
+import com.cydeo.service.KeycloakService;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
@@ -28,14 +29,17 @@ public class UserServiceImpl implements UserService {
     private final ProjectService projectService;
     private final TaskService taskService;
     private final PasswordEncoder passwordEncoder;
+    private final KeycloakService keycloakService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ProjectService projectService, TaskService taskService, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ProjectService projectService, TaskService taskService, PasswordEncoder passwordEncoder, KeycloakService keycloakService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.projectService = projectService;
         this.taskService = taskService;
         this.passwordEncoder = passwordEncoder;
+        this.keycloakService = keycloakService;
     }
+
 
     @Override
     public List<UserDTO> listAllUsers() {
@@ -61,6 +65,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(obj);
 
+        keycloakService.userCreate(dto);
 
     }
 
@@ -93,6 +98,7 @@ public class UserServiceImpl implements UserService {
             user.setIsDeleted(true);
             user.setUserName(user.getUserName() + "-" + user.getId());
             userRepository.save(user);
+            keycloakService.delete(username);
         }
 
     }
